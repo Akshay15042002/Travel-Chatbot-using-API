@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Travel Assistant Chatbot</title>
+</head>
+<body>
+    <h1>Welcome to the Travel Assistant Chatbot!</h1>
+    <div id="chat-container">
+        <div id="chat"></div>
+        <input type="text" id="user-input" placeholder="You:">
+    </div>
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        function sendMessage() {
+            var userInput = document.getElementById("user-input").value;
+            appendMessage("You: " + userInput);
+
+            // Send user input to the server using AJAX
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/send_message", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    appendMessage("Chatbot: " + response.message);
+                }
+            };
+            var data = JSON.stringify({ user_input: userInput });
+            xhr.send(data);
+
+            document.getElementById("user-input").value = "";
+        }
+
+        function appendMessage(message) {
+            var chatDiv = document.getElementById("chat");
+            chatDiv.innerHTML += "<p>" + message + "</p>";
+        }
+    </script>
+</body>
+</html>
